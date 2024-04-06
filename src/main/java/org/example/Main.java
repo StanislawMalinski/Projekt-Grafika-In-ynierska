@@ -1,35 +1,62 @@
 package org.example;
 
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
-public class Main {
-    public static void main(String[] args) {
-        File file = new File(args[0]);
-        List<Figure> figures = readFigure(file);
-        Frame frame = new Frame();
+
+public class Main extends Application {
+    public static void main(String []args){
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Group root = new Group();
+        Scene s = new Scene(root);
         Camera camera = new Camera();
+        setUpKeyHandler(s, (moveType) -> camera.move(moveType));
+        primaryStage.setWidth(500);
+        primaryStage.setHeight(500);
+        primaryStage.setResizable(false);
+        primaryStage.setScene(s);
+        primaryStage.show();
+
+        File file = new File("src/main/java/org/example/figures.txt");
+        System.out.println(file.getAbsolutePath());
+        List<Figure> figures = readFigure(file);
+
+        /*
         frame.addKeyListener(new KeyPressListener(move -> {
             makeAMove(camera, frame, move);
             draw(camera, figures, frame);
             return null;
         }));
+        */
+
     }
 
-    public static void makeAMove(Camera camera, Frame frame,TypeOfMoves move) {
-        camera.move(move);
+    private static void setUpKeyHandler(Scene s, Function<TypeOfMoves,Void> callback){
+        s.setOnKeyPressed(new KeyPressListener(callback));
     }
 
     public static void draw(Camera camera, List<Figure> figures, Frame frame){
         Painter painter = new Painter();
-        frame.paintPoint(100, 100);
+        frame.removeAll();
         for (Figure figure : figures)
-            for (Edge edge : figure.getEdges())
+            for (Edge edge : figure.getEdges()) {
                 for (Point point : edge.getPoints())
-                    painter.paint(camera, point, frame);
+                    frame.paintObject(painter.getPaintingOfPoint(camera, point));
+                frame.paintObject(painter.getPaintingOfEdge(camera, edge));
+            }
         frame.update(frame.getGraphics());
     }
     public static List<Figure> readFigure(File file){

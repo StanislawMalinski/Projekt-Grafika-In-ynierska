@@ -1,74 +1,66 @@
 package org.example;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
+
 import java.util.function.Function;
 
-public class KeyPressListener implements KeyListener {
-    private final Function<TypeOfMoves,Void> Callback;
+public class KeyPressListener implements EventHandler<KeyEvent> {
+    private final Function<TypeOfMoves,Void> callback;
 
     public KeyPressListener(Function<TypeOfMoves, Void> callback) {
-        Callback = callback;
+        this.callback = callback;
     }
-
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-                Callback.apply(TypeOfMoves.FORWARD);
+    public void handle(KeyEvent event) {
+        switch (event.getCode()) {
+            case UP:
+                callback.apply(TypeOfMoves.FORWARD);
                 break;
-            case KeyEvent.VK_DOWN:
-                Callback.apply(TypeOfMoves.BACKWARD);
+            case DOWN:
+                callback.apply(TypeOfMoves.BACKWARD);
                 break;
-            case KeyEvent.VK_LEFT:
-                Callback.apply(TypeOfMoves.LEFT);
+            case LEFT:
+                callback.apply(TypeOfMoves.LEFT);
                 break;
-            case KeyEvent.VK_RIGHT:
-                Callback.apply(TypeOfMoves.RIGHT);
+            case RIGHT:
+                callback.apply(TypeOfMoves.RIGHT);
                 break;
-            case KeyEvent.VK_U:
-                Callback.apply(TypeOfMoves.UP);
+            case U:
+                callback.apply(TypeOfMoves.UP);
                 break;
-            case KeyEvent.VK_J:
-                Callback.apply(TypeOfMoves.DOWN);
+            case J:
+                callback.apply(TypeOfMoves.DOWN);
                 break;
-            case KeyEvent.VK_W:
-                Callback.apply(TypeOfMoves.ROTATE_UP);
+            case W:
+                callback.apply(TypeOfMoves.ROTATE_UP);
                 break;
-            case KeyEvent.VK_S:
-                Callback.apply(TypeOfMoves.ROTATE_DOWN);
+            case S:
+                callback.apply(TypeOfMoves.ROTATE_DOWN);
                 break;
-            case KeyEvent.VK_A:
-                Callback.apply(TypeOfMoves.ROTATE_LEFT);
+            case A:
+                callback.apply(TypeOfMoves.ROTATE_LEFT);
                 break;
-            case KeyEvent.VK_D:
-                Callback.apply(TypeOfMoves.ROTATE_RIGHT);
+            case D:
+                callback.apply(TypeOfMoves.ROTATE_RIGHT);
                 break;
-            case KeyEvent.VK_Q:
-                Callback.apply(TypeOfMoves.ROTATE_COUNTERCLOCKWISE);
+            case Q:
+                callback.apply(TypeOfMoves.ROTATE_COUNTERCLOCKWISE);
                 break;
-            case KeyEvent.VK_E:
-                Callback.apply(TypeOfMoves.ROTATE_CLOCKWISE);
+            case E:
+                callback.apply(TypeOfMoves.ROTATE_CLOCKWISE);
                 break;
-            case KeyEvent.VK_Z:
-                Callback.apply(TypeOfMoves.ZOOM_IN);
+            case Z:
+                callback.apply(TypeOfMoves.ZOOM_IN);
                 break;
-            case KeyEvent.VK_C:
-                Callback.apply(TypeOfMoves.ZOOM_OUT);
+            case C:
+                callback.apply(TypeOfMoves.ZOOM_OUT);
                 break;
             default:
                 System.out.println("Unknown key");
                 break;
         }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
+        System.out.println(event.getCode());
     }
 }
