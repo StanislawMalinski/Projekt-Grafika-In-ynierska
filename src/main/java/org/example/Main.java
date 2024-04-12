@@ -2,75 +2,91 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.dataTypes.Figure;
+import org.example.enums.TypeOfMoves;
+import org.example.graphics.Camera;
+import org.example.graphics.Painter;
+import org.example.nodes.Edge;
+import org.example.nodes.Point;
+import org.example.utils.KeyPressListener;
+import org.example.utils.VectorCalculator;
+import org.example.utils.ResizeTool;
+import org.example.utils.SceneReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
+
+import static java.lang.Math.atan;
 
 
 public class Main extends Application {
+    private Camera camera;
+    private Scene scene;
+    private Group root;
+    private Painter painter;
+    private ResizeTool resizeTool;
+    private List<Figure> figures;
+
+    private final int WIDTH = 500;
+    private final int HEIGHT = 500;
+    
     public static void main(String []args){
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Group root = new Group();
-        Scene s = new Scene(root);
-        Camera camera = new Camera();
-        setUpKeyHandler(s, (moveType) -> camera.move(moveType));
-        primaryStage.setWidth(500);
-        primaryStage.setHeight(500);
+    public void start(Stage primaryStage) {
+        root = new Group();
+        scene = new Scene(root);
+        camera = new Camera();
+        painter = new Painter(camera);
+        resizeTool = new ResizeTool(WIDTH, HEIGHT);
+
+        File file = new File("src/main/resources/figures.txt");
+        figures = SceneReader.readFigure(file);
+        painter.setUpNewCanvas();
+        draw();
+
+        setUpKeyHandler(scene);
+        primaryStage.setWidth(WIDTH);
+        primaryStage.setHeight(HEIGHT);
         primaryStage.setResizable(false);
-        primaryStage.setScene(s);
+        primaryStage.setScene(scene);
         primaryStage.show();
-
-        File file = new File("src/main/java/org/example/figures.txt");
-        System.out.println(file.getAbsolutePath());
-        List<Figure> figures = readFigure(file);
-
-        /*
-        frame.addKeyListener(new KeyPressListener(move -> {
-            makeAMove(camera, frame, move);
-            draw(camera, figures, frame);
-            return null;
-        }));
-        */
-
     }
 
-    private static void setUpKeyHandler(Scene s, Function<TypeOfMoves,Void> callback){
-        s.setOnKeyPressed(new KeyPressListener(callback));
+    private void setUpKeyHandler(Scene s){
+        s.setOnKeyPressed(new KeyPressListener(this::callBack));
     }
 
-    public static void draw(Camera camera, List<Figure> figures, Frame frame){
-        Painter painter = new Painter();
-        frame.removeAll();
+    private Void callBack(TypeOfMoves typeOfMoves) {
+        camera.move(typeOfMoves);
+        draw();
+        return null;
+    }
+
+    public void draw(){
+        painter.setUpNewCanvas();
+        root.getChildren().clear();
+        List<Node> objects = new ArrayList<>();
+        Point n;
         for (Figure figure : figures)
             for (Edge edge : figure.getEdges()) {
-                for (Point point : edge.getPoints())
-                    frame.paintObject(painter.getPaintingOfPoint(camera, point));
-                frame.paintObject(painter.getPaintingOfEdge(camera, edge));
+                for (Point point : edge.getPoints()) {
+                    n = painter.getPaintingOfPoint(camera, point);
+                    System.out.println("Before mapping: " + n);
+                    resizeTool.resize(n);
+                    System.out.println("After mapping: " + n);
+                    objects.add(n);
+                }
+                objects.add(painter.getPaintingOfEdge(camera, edge));
             }
-        frame.update(frame.getGraphics());
-    }
-    public static List<Figure> readFigure(File file){
-        List<Figure> figures = new ArrayList<Figure>();
-        try {
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                figures.add(new Figure(line));
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return figures;
+        objects.forEach(node -> root.getChildren().add(node));
     }
 }

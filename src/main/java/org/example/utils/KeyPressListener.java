@@ -1,8 +1,8 @@
-package org.example;
+package org.example.utils;
 
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyEvent;
+import org.example.enums.TypeOfMoves;
 
 import java.util.function.Function;
 
@@ -57,10 +57,6 @@ public class KeyPressListener implements EventHandler<KeyEvent> {
             case C:
                 callback.apply(TypeOfMoves.ZOOM_OUT);
                 break;
-            default:
-                System.out.println("Unknown key");
-                break;
         }
-        System.out.println(event.getCode());
     }
 }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.dataTypes;
 
 public class Quaternion {
     private final double x0, x1, x2, x3;
@@ -38,23 +38,13 @@ public class Quaternion {
         );
     }
 
-    public Quaternion times(Quaternion b) {
-        Quaternion a = this;
-        double y0 = a.x0 * b.x0 - a.x1 * b.x1 - a.x2 * b.x2 - a.x3 * b.x3;
-        double y1 = a.x0 * b.x1 + a.x1 * b.x0 + a.x2 * b.x3 - a.x3 * b.x2;
-        double y2 = a.x0 * b.x2 - a.x1 * b.x3 + a.x2 * b.x0 + a.x3 * b.x1;
-        double y3 = a.x0 * b.x3 + a.x1 * b.x2 - a.x2 * b.x1 + a.x3 * b.x0;
-        return new Quaternion(y0, y1, y2, y3);
-    }
-
     public Quaternion inverse() {
-        double d = x0 * x0 + x1 * x1 + x2 * x2 + x3 * x3;
-        return new Quaternion(x0 / d, -x1 / d, -x2 / d, -x3 / d);
+        return new Quaternion(x0, -x1, -x2, -x3);
     }
 
     public Quaternion divides(Quaternion b) {
         Quaternion a = this;
-        return a.times(b.inverse());
+        return a.multiply(b.inverse());
     }
 
     public double getX0() {
@@ -73,4 +63,8 @@ public class Quaternion {
         return x3;
     }
 
+    public Quaternion normalize() {
+        double norm = norm();
+        return new Quaternion(x0 / norm, x1 / norm, x2 / norm, x3 / norm);
+    }
 }

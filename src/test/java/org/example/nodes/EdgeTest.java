@@ -1,5 +1,7 @@
-package org.example;
+package org.example.nodes;
 
+import org.example.nodes.Edge;
+import org.example.nodes.Point;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

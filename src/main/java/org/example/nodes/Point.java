@@ -1,9 +1,11 @@
-package org.example;
+package org.example.nodes;
+
+import javafx.scene.shape.Circle;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Point{
+public class Point extends Circle {
     private double x;
     private double y;
     private double z;
@@ -14,6 +16,11 @@ public class Point{
         this.x = x;
         this.y = y;
         this.z = z;
+
+        setCenterX(x);
+        setCenterY(y);
+        setRadius(1);
+        setVisible(true);
     }
 
     public Point(String string){
@@ -25,12 +32,16 @@ public class Point{
         }
     }
 
+    public Point copy(){
+        return new Point(x, y, z);
+    }
     public double getX() {
         return x;
     }
 
     public void setX(double x) {
         this.x = x;
+        setCenterX(x);
     }
 
     public double getY() {
@@ -39,6 +50,7 @@ public class Point{
 
     public void setY(double y) {
         this.y = y;
+        setCenterY(y);
     }
 
     public double getZ() {

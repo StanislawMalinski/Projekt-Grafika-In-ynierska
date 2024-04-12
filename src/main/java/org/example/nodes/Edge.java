@@ -1,10 +1,16 @@
-package org.example;
+package org.example.nodes;
 
+import javafx.scene.shape.Line;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Edge {
-    private final List<Point> points;
+public class Edge extends Line {
+    private List<Point> points;
+    public Edge(){
+        points = new ArrayList<>();
+    }
 
     public Edge(Object[] points) {
         if (points.length != 2) {
@@ -20,6 +26,12 @@ public class Edge {
         } else {
             throw new IllegalArgumentException("An edge must have two points of type Point");
         }
+
+        setStartX(this.points.get(0).getX());
+        setStartY(this.points.get(0).getY());
+        setEndX(this.points.get(1).getX());
+        setEndY(this.points.get(1).getY());
+        setVisible(true);
     }
 
     public List<Point> getPoints() {

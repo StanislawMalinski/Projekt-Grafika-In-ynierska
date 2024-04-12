@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.dataTypes.Figure;
+import org.example.nodes.Edge;
+import org.example.nodes.Point;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
